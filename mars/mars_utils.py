@@ -14,6 +14,7 @@ COMM_COPY_HEADER_FILES = {
             "mars/comm/string_cast.h": "comm",
             "mars/comm/comm_data.h": "comm",
             "mars/comm/projdef.h": "comm",
+            "mars/comm/platform_comm.h": "comm",
             "mars/comm/socket/local_ipstack.h": "comm",
             "mars/comm/socket/nat64_prefix_util.h": "comm",
             "mars/comm/has_member.h" : "comm",
@@ -131,6 +132,19 @@ def remove_cmake_files(path):
         os.remove(f)
     for f in glob.glob(path + '/*.so'):
         os.remove(f)
+
+def clean_except(path, except_list):
+    for fpath, dirs, fs in os.walk(path):
+        in_except = False
+        for exc in except_list:
+            if exc in fpath:
+                in_except = True
+                break
+        if not in_except:
+            remove_cmake_files(fpath)
+
+    if not os.path.exists(path):
+        os.makedirs(path)    
 
 
 def clean(path, incremental=False):
